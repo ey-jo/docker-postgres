@@ -1,6 +1,7 @@
-# multi-postgres: Using multiple databases with the official PostgreSQL Docker image
+# postgres: PostgreSQL extension adding creation of multiple users/DBs, backup & restore functions
 
-This Docker image extends the [official PostgreSQL](https://hub.docker.com/_/postgres)  image to support the creation of multiple databases and users at startup, as well as automated backups with configurable retention policies and scheduling options. It is ideal for environments where multiple isolated databases are required, and regular backups are essential.
+
+This Docker image extends the [official PostgreSQL](https://hub.docker.com/_/postgres) image to support the creation of multiple databases and users at startup, as well as automated backups with configurable retention policies and scheduling options. It is ideal for environments where multiple isolated databases are required, and regular backups are essential.
 
 
 Available on docker: [eyjo1/multi-postgres](https://hub.docker.com/r/eyjo1/multi-postgres)

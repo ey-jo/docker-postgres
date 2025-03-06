@@ -9,8 +9,10 @@ ENV LIST_DATABASE=""
 ENV LIST_USER=""
 ENV LIST_PASSWORD=""
 
-# Backup configuration
+# Directory where the backup files will be saved
 ARG BACKUP_DIR="/backups"
+# Directory where the scripts will be placed
+ARG SCRIPT_DIR="/opt/scripts"
 
 # Days between backups
 ENV BACKUP_INTERVAL=0
@@ -23,33 +25,32 @@ ENV BACKUP_LIMIT=5
 # Expected format: "minute hour day month day-of-week"
 ENV BACKUP_TIME_FORMAT=""
 
+
 # Install cron
 RUN apt update -y && apt install -y cron
 
 # Create backup directories and files
-RUN mkdir -p "${BACKUP_DIR}"
-RUN mkdir -p /opt/backups/
-RUN touch /opt/backups/.vars
+RUN mkdir -p ${BACKUP_DIR}
+RUN mkdir -p ${SCRIPT_DIR}
 
 # Store environment variables in a file for the backup script
-RUN echo "POSTGRES_USER=${POSTGRES_USER}" > /opt/backups/.vars && \
-    echo "BACKUP_DIR=${BACKUP_DIR}" >> /opt/backups/.vars && \
-    echo "BACKUP_LIMIT=${BACKUP_LIMIT}" >> /opt/backups/.vars
+RUN echo "POSTGRES_USER=${POSTGRES_USER}" > ${SCRIPT_DIR}/.vars && \
+    echo "BACKUP_DIR=${BACKUP_DIR}" >> ${SCRIPT_DIR}/.vars && \
+    echo "BACKUP_LIMIT=${BACKUP_LIMIT}" >> ${SCRIPT_DIR}/.vars
 
 # Copy the backup script and make it executable
-COPY backup.sh /opt/backups/backup.sh
-RUN chmod +x /opt/backups/backup.sh
+COPY scripts/backup.sh ${SCRIPT_DIR}/backup.sh
+RUN chmod +x ${SCRIPT_DIR}/backup.sh
 
-# Create the cronjob for backups
-RUN if [ -n "$BACKUP_TIME_FORMAT" ]; then \
-    echo "${BACKUP_TIME_FORMAT} /opt/backups/backup.sh" > /tmp/cronjob.txt; \
-    crontab /tmp/cronjob.txt; \
-elif [ "$BACKUP_INTERVAL" -ne 0 ]; then \
-    echo "0 ${BACKUP_HOUR} */${BACKUP_INTERVAL} * * /opt/backups/backup.sh" > /tmp/cronjob.txt; \
-    crontab /tmp/cronjob.txt; \
-fi
+# Copy the entrypoint script and make it executable
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Create the users with corresponding databases
 RUN mkdir -p /docker-entrypoint-initdb.d/
 COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
 RUN chmod +x /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["postgres"]
