@@ -16,6 +16,7 @@ jobs:
       - name: Update repository description
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          desc: ${{ github.description }}
         run: |
           curl -X PATCH \
             -H "Authorization: token $GITHUB_TOKEN" \

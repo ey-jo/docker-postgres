@@ -1,11 +1,11 @@
-# postgres: PostgreSQL extension adding creation of multiple users/DBs, backup & restore functions
+# Postgres: Extension to Official Image Adding Creation of Multiple Users/DBs, Backup & Restore Functions
 
 
 This Docker image extends the [official PostgreSQL](https://hub.docker.com/_/postgres) image to support the creation of multiple databases and users at startup, as well as automated backups with configurable retention policies and scheduling options. It is ideal for environments where multiple isolated databases are required, and regular backups are essential.
 
 
-Available on docker: [eyjo1/multi-postgres](https://hub.docker.com/r/eyjo1/multi-postgres)
-See on github: [ey-jo/docker-postgresql-multiple-databases](https://github.com/ey-jo/docker-postgresql-multiple-databases)
+Available on Docker: [eyjo1/multi-postgres](https://hub.docker.com/r/eyjo1/multi-postgres)
+See on GitHub: [ey-jo/docker-postgresql-multiple-databases](https://github.com/ey-jo/docker-postgresql-multiple-databases)
 
 
 ## Still in Development
@@ -32,6 +32,7 @@ If used all lists must contain the same amount of items. The only exception bein
 The entire creation process can be found [here](create-multiple-postgresql-databases.sh).
 
 ##### Backups
+Backups are disabled by default.
 - `BACKUP_LIMIT`: The number of backups to keep before deleting the oldest one. Set to `0` to disable deletion of old backups. Default is `5`.
 - `BACKUP_INTERVAL`: The number of days between each backup. Set to `0` to disable backups. Default is `0`.
 - `BACKUP_HOUR`: The hour of time when the backup will be created. Must be between `0` and `23`. Default is `1`.
@@ -91,4 +92,6 @@ services:
 
 ### Explanation
 
-This creates a root user named `root` with the password `password`. Two databases `db1` and `db2` are created with corresponding users `user1` and `user2`, each with their respective passwords `pass1` and `pass2`. Backups are configured to keep the last 5 backups, run daily at 2 AM.
+This configuration sets up a PostgreSQL instance with a root user named `root` and the password `password`. It creates two databases, `db1` and `db2`, each with a corresponding user, `user1` and `user2`, and their respective passwords, `pass1` and `pass2`. This setup is beneficial for environments where multiple isolated databases are required, allowing different users to access their respective databases securely.
+
+The backup configuration ensures data safety by keeping the last 5 backups and running daily at 2 AM. This automated backup process helps in maintaining regular backups without manual intervention, providing a reliable way to restore data in case of any data loss or corruption. The use of environment variables makes it easy to customize the setup according to specific needs, enhancing flexibility and ease of deployment.
