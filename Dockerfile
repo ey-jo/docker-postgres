@@ -13,6 +13,8 @@ ENV LIST_PASSWORD=""
 ARG BACKUP_DIR="/backups"
 # Directory where the scripts will be placed
 ARG SCRIPT_DIR="/opt/scripts"
+# Directory where the user can place files to be migrated
+ARG DB_DIR="/migrate-from"
 
 # Days between backups
 ENV BACKUP_INTERVAL=0
@@ -35,12 +37,18 @@ RUN mkdir -p ${SCRIPT_DIR}
 
 # Store environment variables in a file for the backup script
 RUN echo "POSTGRES_USER=${POSTGRES_USER}" > ${SCRIPT_DIR}/.vars && \
-    echo "BACKUP_DIR=${BACKUP_DIR}" >> ${SCRIPT_DIR}/.vars && \
-    echo "BACKUP_LIMIT=${BACKUP_LIMIT}" >> ${SCRIPT_DIR}/.vars
+echo "BACKUP_DIR=${BACKUP_DIR}" >> ${SCRIPT_DIR}/.vars && \
+echo "BACKUP_LIMIT=${BACKUP_LIMIT}" >> ${SCRIPT_DIR}/.vars
 
 # Copy the backup script and make it executable
-COPY scripts/backup.sh ${SCRIPT_DIR}/backup.sh
+COPY db-scripts/backup.sh ${SCRIPT_DIR}/backup.sh
 RUN chmod +x ${SCRIPT_DIR}/backup.sh
+# Copy the restore script and make it executable
+COPY db-scripts/restore.sh ${SCRIPT_DIR}/restore.sh
+RUN chmod +x ${SCRIPT_DIR}/restore.sh
+# Copy the migrate script and make it executable
+COPY db-scripts/migrate.sh ${SCRIPT_DIR}/migrate.sh
+RUN chmod +x ${SCRIPT_DIR}/migrate.sh
 
 # Copy the entrypoint script and make it executable
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -50,6 +58,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN mkdir -p /docker-entrypoint-initdb.d/
 COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
 RUN chmod +x /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+
+
+# install pgloader
+RUN apt-get install -y pgloader
+
 
 # Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

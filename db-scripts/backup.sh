@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Source the variables from the .vars file
 . ./.vars
 
