@@ -9,6 +9,7 @@ elif [ "$BACKUP_INTERVAL" -ne 0 ]; then
     echo "0 ${BACKUP_HOUR} */${BACKUP_INTERVAL} * * ${SCRIPT_DIR}/backup.sh" > /cronjob.txt
     crontab /cronjob.txt
 fi
+rm /cronjob.txt
 
 # Start cron service
 service cron start

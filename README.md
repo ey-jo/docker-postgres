@@ -5,7 +5,7 @@ This Docker image extends the [official PostgreSQL](https://hub.docker.com/_/pos
 
 
 Available on Docker: [eyjo1/multi-postgres](https://hub.docker.com/r/eyjo1/multi-postgres)
-See on GitHub: [ey-jo/docker-postgresql-multiple-databases](https://github.com/ey-jo/docker-postgresql-multiple-databases)
+Source on GitHub: [ey-jo/docker-postgres](https://github.com/ey-jo/docker-postgres)
 
 
 ## Still in Development
@@ -15,7 +15,7 @@ Things may break. If you notice something, feel free to open an issue on GitHub.
 ## Usage
 
 ### Environment Parameters
-All configurations from the official Postgres image are available.
+All [configurations](https://github.com/docker-library/docs/blob/master/postgres/README.md#environment-variables) from the official Postgres Image can be used here as well.
 
 #### Required Parameters
 - `POSTGRES_USER`: The username for the PostgreSQL superuser. Will be used as root and for all automated tasks. If not provided "root" will be used.

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Source the variables from the .vars file
-. ./.vars
+# Source the variables from the environment
+. /etc/environment
 
 BACKUP_FILE=$1
 
@@ -13,7 +13,7 @@ if [ $# -ne 1 ]; then
 fi
 
 # Restore the database
-pg_restore -U $POSTGRES_USER -1 $BACKUP_FILE
+pg_restore -e -U "$POSTGRES_USER" -d postgres "$BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
     echo "Database restored successfully."
